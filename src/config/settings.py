@@ -275,5 +275,11 @@ if _local_overrides:
         len(_local_overrides),
         ", ".join(sorted(_local_overrides)),
     )
-_validate_required_config(_effective_config)
+if _bootstrap.required or _config_server_loaded:
+    _validate_required_config(_effective_config)
+else:
+    logger.info(
+        "Config server not required (CONFIG_SERVER_REQUIRED=false); "
+        "skipping strict required config validation and falling back to ApiSettings defaults"
+    )
 settings = ApiSettings(**_effective_config)

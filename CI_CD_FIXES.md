@@ -20,6 +20,7 @@ This document records the resolution of failures from GitHub Actions Run [#36098
 | **Bandit** | [`src/repositories/data_sql_repo.py`](file:///mnt/disks/Devel/NuboNS-Intern/PICC-AIKM-AIKM-backend/src/repositories/data_sql_repo.py) | Added `# nosec B608` to `update_database` and `update_sql` queries | `B608` (SQL injection false positive) |
 | **Bandit** | [`src/repositories/ddl_rule_repo.py`](file:///mnt/disks/Devel/NuboNS-Intern/PICC-AIKM-AIKM-backend/src/repositories/ddl_rule_repo.py) | Added `# nosec B608` to `update_ddl` and `update_rule` queries | `B608` (SQL injection false positive) |
 | **Bandit** | [`src/repositories/question_repo.py`](file:///mnt/disks/Devel/NuboNS-Intern/PICC-AIKM-AIKM-backend/src/repositories/question_repo.py) | Added `# nosec B608` to `update` query | `B608` (SQL injection false positive) |
+| **Config** | [`src/config/settings.py`](file:///mnt/disks/Devel/NuboNS-Intern/PICC-AIKM-AIKM-backend/src/config/settings.py) | Conditioned `_validate_required_config` on `_bootstrap.required or _config_server_loaded` | Hermetic testing with `CONFIG_SERVER_REQUIRED=false` |
 | **CI/CD** | [`.github/workflows/ci-cd.yml`](file:///mnt/disks/Devel/NuboNS-Intern/PICC-AIKM-AIKM-backend/.github/workflows/ci-cd.yml) | Added dynamic lowercase conversion for GHCR image naming (`IMAGE_NAME=${GITHUB_REPOSITORY,,}`) | OCI / GHCR lowercase requirement |
 
 ---
@@ -47,6 +48,13 @@ GitHub Container Registry (`ghcr.io`) strictly rejects repository/image names co
   run: echo "IMAGE_NAME=${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
 ```
 and passes `${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}` to `docker/metadata-action@v5`.
+
+### D. Config Server Fallback & Hermetic Test Execution (Resolved Pytest Failure)
+During test suite execution (`pytest`), `CONFIG_SERVER_REQUIRED="false"` allows the service to boot without an external Spring Cloud Config Server. However, `_validate_required_config(_effective_config)` previously enforced that all 47 production config keys exist in `_effective_config` at import time, raising:
+```
+RuntimeError: Missing required config values: API_HOST, API_PORT, ...
+```
+We updated `src/config/settings.py` so that strict key validation is enforced when `_bootstrap.required` or `_config_server_loaded` is `True` (e.g., in production deployments). When `CONFIG_SERVER_REQUIRED=false` and no config server is reachable, it safely logs a fallback notice and allows `ApiSettings` to instantiate using its built-in default values.
 
 ---
 
