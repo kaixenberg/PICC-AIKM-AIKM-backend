@@ -57,7 +57,7 @@ jobs:
         run: pip-audit --desc on -r requirements-api.txt || true
 
       - name: Generate CycloneDX SBOM
-        run: cyclonedx-py requirements requirements-api.txt --outfile bom.json
+        run: cyclonedx-py requirements requirements-api.txt -o bom.json
 
       - name: Upload CycloneDX SBOM
         uses: actions/upload-artifact@v4

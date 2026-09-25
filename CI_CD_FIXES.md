@@ -23,6 +23,7 @@ This document records the resolution of failures from GitHub Actions Run [#36098
 | **Config** | [`src/config/settings.py`](file:///mnt/disks/Devel/NuboNS-Intern/PICC-AIKM-AIKM-backend/src/config/settings.py) | Conditioned `_validate_required_config` on `_bootstrap.required or _config_server_loaded` | Hermetic testing with `CONFIG_SERVER_REQUIRED=false` |
 | **Tests** | [`tests/test_api_bucket.py`](file:///mnt/disks/Devel/NuboNS-Intern/PICC-AIKM-AIKM-backend/tests/test_api_bucket.py) | Patched `bucket_detail_repo.get_by_bucket` in `test_delete_bucket` tests | Unmocked database pool access in endpoint |
 | **CI/CD** | [`.github/workflows/ci-cd.yml`](file:///mnt/disks/Devel/NuboNS-Intern/PICC-AIKM-AIKM-backend/.github/workflows/ci-cd.yml) | Added dynamic lowercase conversion for GHCR image naming (`IMAGE_NAME=${GITHUB_REPOSITORY,,}`) | OCI / GHCR lowercase requirement |
+| **CI/CD** | [`.github/workflows/ci-cd.yml`](file:///mnt/disks/Devel/NuboNS-Intern/PICC-AIKM-AIKM-backend/.github/workflows/ci-cd.yml) | Fixed CycloneDX CLI output flag from `--outfile` to `-o bom.json` | CycloneDX CLI argument syntax |
 
 ---
 
@@ -59,6 +60,12 @@ We updated `src/config/settings.py` so that strict key validation is enforced wh
 
 ### E. Delete Bucket Endpoint Mocking in Pytest (Resolved 2 Failing Tests)
 In `DELETE /manageBucket/deleteBucket/{id}`, the endpoint calls `bucket_detail_repo.get_by_bucket` to fetch document IDs for downstream MinIO cleanup before deleting the bucket row. In `tests/test_api_bucket.py`, `bucket_repo.delete` was mocked, but `bucket_detail_repo.get_by_bucket` was left unpatched. Since the test environment intentionally disables the real PostgreSQL pool, unmocked DB calls raised `RuntimeError: DB pool not initialised; call init_pool() first` (resulting in HTTP 500 instead of 200/404). We added `patch("src.repositories.bucket_detail_repo.get_by_bucket", return_value=[])` to both `test_delete_bucket_200` and `test_delete_bucket_404_when_not_found`.
+
+### F. CycloneDX CLI Output Argument Correction
+In the SBOM generation step, `cyclonedx-py requirements requirements-api.txt --outfile bom.json` failed with `unrecognized arguments: --outfile`. In `cyclonedx-bom>=4.0.0`, the output destination flag is `-o <file>` (or `--output-file <file>`). We updated the command to:
+```bash
+cyclonedx-py requirements requirements-api.txt -o bom.json
+```
 
 ---
 
