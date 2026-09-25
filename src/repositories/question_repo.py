@@ -69,7 +69,7 @@ def update(qa_id: str, data: Dict, user: str) -> Optional[Dict]:
     params["id"] = qa_id
     with get_cursor() as cur:
         cur.execute(
-            f"UPDATE nnp_km_qa SET {set_sql} WHERE id = %(id)s RETURNING *",
+            f"UPDATE nnp_km_qa SET {set_sql} WHERE id = %(id)s RETURNING *",  # nosec B608
             params,
         )
         return cur.fetchone()

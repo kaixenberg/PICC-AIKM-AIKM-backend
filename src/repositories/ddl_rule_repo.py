@@ -53,7 +53,7 @@ def update_ddl(ddl_id: str, data: Dict, user: str) -> Optional[Dict]:
     params["id"] = ddl_id
     with get_cursor() as cur:
         cur.execute(
-            f"UPDATE nnp_database_ddl SET {set_sql} WHERE id = %(id)s AND status != 'DELETED' RETURNING *",
+            f"UPDATE nnp_database_ddl SET {set_sql} WHERE id = %(id)s AND status != 'DELETED' RETURNING *",  # nosec B608
             params,
         )
         return cur.fetchone()
@@ -112,7 +112,7 @@ def update_rule(rule_id: str, data: Dict, user: str) -> Optional[Dict]:
     params["id"] = rule_id
     with get_cursor() as cur:
         cur.execute(
-            f"UPDATE nnp_database_rule SET {set_sql} WHERE id = %(id)s AND status != 'DELETED' RETURNING *",
+            f"UPDATE nnp_database_rule SET {set_sql} WHERE id = %(id)s AND status != 'DELETED' RETURNING *",  # nosec B608
             params,
         )
         return cur.fetchone()

@@ -12,7 +12,6 @@ and is therefore double-quoted.
 from contextlib import contextmanager
 from typing import Iterator, Optional
 
-import psycopg2
 from psycopg2.extras import RealDictCursor
 from psycopg2.pool import ThreadedConnectionPool
 

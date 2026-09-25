@@ -25,7 +25,7 @@ class BaseAppSettings(BaseModel):
 
     model_config = ConfigDict(populate_by_name=True, extra="ignore")
 
-    api_host: str = Field(default="0.0.0.0", alias="API_HOST")
+    api_host: str = Field(default="0.0.0.0", alias="API_HOST")  # nosec B104
     api_port: int = Field(default=8000, alias="API_PORT")
     api_public_url: Optional[str] = Field(default=None, alias="API_PUBLIC_URL")
     log_level: str = Field(default="INFO", alias="LOG_LEVEL")

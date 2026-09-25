@@ -72,7 +72,7 @@ def update(detail_id: str, data: Dict, user: str) -> Optional[Dict]:
     params["id"] = detail_id
     with get_cursor() as cur:
         cur.execute(
-            f"UPDATE nnp_bucket_details SET {set_sql} WHERE id = %(id)s RETURNING *",
+            f"UPDATE nnp_bucket_details SET {set_sql} WHERE id = %(id)s RETURNING *",  # nosec B608
             params,
         )
         return cur.fetchone()

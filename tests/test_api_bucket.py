@@ -2,8 +2,6 @@
 
 from unittest.mock import AsyncMock, patch
 
-import pytest
-
 _BUCKET = {
     "id": "11111111-1111-1111-1111-111111111111",
     "bucket_name": "ops_runbooks",

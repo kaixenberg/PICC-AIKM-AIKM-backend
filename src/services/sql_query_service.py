@@ -12,7 +12,6 @@ from urllib.parse import parse_qs, urlparse
 
 import psycopg2
 
-from src.config.settings import settings
 from src.repositories import data_sql_repo
 from src.services import vanna_service
 from src.services.embeddings import embed_texts_vanna_local

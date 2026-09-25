@@ -1,7 +1,6 @@
 """manageSqlQuery router (NEW). NL→SQL query and promote-to-curated endpoints."""
 
 import asyncio
-from uuid import uuid4
 
 from fastapi import APIRouter, HTTPException, Query, Request
 from fastapi.concurrency import run_in_threadpool

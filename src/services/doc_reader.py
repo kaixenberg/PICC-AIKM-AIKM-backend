@@ -129,7 +129,7 @@ def read_pdf_page_documents_with_visual_assets(
                         },
                     }
                 )
-                print(f"Processing complete")
+                print("Processing complete")
 
             return page_documents
     except Exception as exc:  # noqa: BLE001

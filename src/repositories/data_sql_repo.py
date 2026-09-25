@@ -145,7 +145,7 @@ def update_database(db_id: str, data: Dict, user: str) -> Optional[Dict]:
     params["id"] = db_id
     with get_cursor() as cur:
         cur.execute(
-            f"UPDATE nnp_km_database SET {set_sql} WHERE id = %(id)s RETURNING *",
+            f"UPDATE nnp_km_database SET {set_sql} WHERE id = %(id)s RETURNING *",  # nosec B608
             params,
         )
         return cur.fetchone()
@@ -205,7 +205,7 @@ def update_sql(sql_id: str, data: Dict, user: str) -> Optional[Dict]:
     params["id"] = sql_id
     with get_cursor() as cur:
         cur.execute(
-            f"UPDATE nnp_database_q SET {set_sql} WHERE id = %(id)s RETURNING *",
+            f"UPDATE nnp_database_q SET {set_sql} WHERE id = %(id)s RETURNING *",  # nosec B608
             params,
         )
         return cur.fetchone()

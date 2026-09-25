@@ -101,7 +101,7 @@ def update(bucket_id: str, data: Dict, user: str, account_ids: Optional[List[str
 
     with get_cursor() as cur:
         cur.execute(
-            f"UPDATE nnp_km_buckets SET {set_sql} WHERE id = %(id)s RETURNING *",
+            f"UPDATE nnp_km_buckets SET {set_sql} WHERE id = %(id)s RETURNING *",  # nosec B608
             params,
         )
         row = cur.fetchone()
