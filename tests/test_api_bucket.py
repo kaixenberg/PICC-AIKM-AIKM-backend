@@ -180,7 +180,8 @@ def test_provision_callback_404_when_not_found(client):
 
 def test_delete_bucket_200(client):
     deleted = {**_BUCKET, "status": "DELETED"}
-    with patch("src.repositories.bucket_repo.delete", return_value=deleted), \
+    with patch("src.repositories.bucket_detail_repo.get_by_bucket", return_value=[]), \
+         patch("src.repositories.bucket_repo.delete", return_value=deleted), \
          patch("src.services.milvus_client.delete_collection", new_callable=AsyncMock, return_value=(True, None)):
         resp = client.delete(f"/manageBucket/deleteBucket/{_BUCKET['id']}")
     assert resp.status_code == 200
@@ -188,6 +189,7 @@ def test_delete_bucket_200(client):
 
 
 def test_delete_bucket_404_when_not_found(client):
-    with patch("src.repositories.bucket_repo.delete", return_value=None):
+    with patch("src.repositories.bucket_detail_repo.get_by_bucket", return_value=[]), \
+         patch("src.repositories.bucket_repo.delete", return_value=None):
         resp = client.delete("/manageBucket/deleteBucket/missing")
     assert resp.status_code == 404
