@@ -228,6 +228,23 @@ rg -n "<REAL_|PRIVATE_|SECRET_|TOKEN_|PASSWORD_>" .
 
 Investigate every match. Some local-only examples such as `localhost` are acceptable; real internal values are not.
 
+### Continuous Integration and Deployment (CI/CD)
+
+The repository uses GitHub Actions defined in `.github/workflows/ci-cd.yml` with two automated stages:
+
+1. **`validate-and-test`** (runs on all PRs and pushes to `main`, `master`, `develop`, `v*.*.*`):
+   - Sets up Python 3.13 with pip dependency caching.
+   - Verifies bytecode compilation (`python -m compileall src tests`).
+   - Runs linting and style checks (`ruff check src tests`).
+   - Executes the full test suite with mocked environment isolation (`pytest`).
+   - Runs SAST security scanning (`bandit`) and dependency vulnerability checks (`pip-audit`).
+   - Generates and uploads a CycloneDX Software Bill of Materials (`bom.json`).
+
+2. **`docker`** (runs on pushes to `main`/`master` and release tags `v*.*.*` after validation passes):
+   - Authenticates to GitHub Container Registry (`ghcr.io`) using `GITHUB_TOKEN` (`packages: write` permission).
+   - Generates OCI metadata tags (`latest`, `semver`, short SHA).
+   - Builds and publishes the container image from `Dockerfile.api` using Docker Buildx and GitHub Actions layer caching.
+
 ---
 
 ## 6. Git Workflow and Branching Strategy

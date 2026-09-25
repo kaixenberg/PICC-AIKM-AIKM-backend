@@ -1,1 +1,5 @@
-pytest
+pytest>=8.0.0
+ruff>=0.5.0
+bandit>=1.7.9
+pip-audit>=2.7.3
+cyclonedx-bom>=4.0.0

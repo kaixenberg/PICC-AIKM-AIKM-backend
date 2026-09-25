@@ -282,11 +282,10 @@ psql "<POSTGRES_CONNECTION_STRING>" -v ON_ERROR_STOP=1 -f db/schema.sql
 
 ### Running Tests
 
-Install the API dependencies and run pytest:
+Install the API and development dependencies and run pytest:
 
 ```bash
-pip install -r requirements-api.txt
-pip install pytest
+pip install -r requirements-api.txt -r requirements-dev.txt
 pytest
 ```
 

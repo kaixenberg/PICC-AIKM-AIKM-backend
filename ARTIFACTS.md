@@ -43,7 +43,7 @@ inherited files — **what was changed**.
 | `run_api.py` | 📋 Inherited | sql-service `run_api.py` | uvicorn launcher |
 | `requirements-api.txt` | ♻️ Inherited | ingestion `requirements-api.txt` | Python deps (trimmed + psycopg2/httpx added) |
 | `Dockerfile.api` | ♻️ Inherited | ingestion `Dockerfile.api` | Container image |
-| `.gitlab-ci.yml` | ♻️ Inherited | sql-service `.gitlab-ci.yml` | Kaniko build + k8s deploy (API-only) |
+| `.github/workflows/ci-cd.yml` | 🆕 New | — | GitHub Actions CI/CD (validation, pytest, SAST, SBOM, GHCR container push) |
 | `k8s-manifest/deployment-api.yaml` | ♻️ Inherited | sql-service same file | API Deployment |
 | `k8s-manifest/service-api.yaml` | ♻️ Inherited | sql-service same file | ClusterIP Service |
 | `k8s-manifest/configmap.yaml` | ♻️ Inherited | sql-service same file | Non-secret config |
@@ -87,9 +87,9 @@ inherited files — **what was changed**.
 - **From:** `ai-data-ingestion-service/Dockerfile.api`.
 - **Changed:** `CMD` runs `src.api.main:app` (sibling ran `main:app`). Removed `git` from system deps and the `data/git_repos` mkdir (not needed). Same `python:3.13-slim` base and layer-caching layout.
 
-### `.gitlab-ci.yml` ♻️
-- **From:** `ai-sql-query-observability-service/.gitlab-ci.yml`.
-- **Changed:** removed all UI image/deploy steps (this service has no UI). Renamed images/rollout target to `ai-km-service`. Set `NAMESPACE: nnp-core-components` (where CoreComp Postgres lives) instead of `nnp-devsecops`. Same Kaniko build + ansible/kubectl deploy approach.
+### `.github/workflows/ci-cd.yml` 🆕
+- **Standardized CI/CD**: Replaced `.gitlab-ci.yml` with GitHub Actions workflow aligned with NNP platform conventions (`ghcr.io` registry, OCI metadata, Buildx layer caching).
+- **Two Stages**: `validate-and-test` (Python 3.13, compileall, ruff lint, pytest, bandit SAST, pip-audit, CycloneDX SBOM) followed by `docker` container build and push to GHCR on `main`/`master` pushes and semver tags.
 
 ### `k8s-manifest/*.yaml` ♻️
 - **From:** the sql-service `k8s-manifest/` set.
